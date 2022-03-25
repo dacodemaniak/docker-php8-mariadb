@@ -1,0 +1,17 @@
+version: '3'
+services: 
+    webservice: 
+        image: webdevops/php-apache:8.0
+        container_name: app
+        volumes: 
+            - ./app:/var/www/vhosts/app/htdocs
+            - ./etc/apache2/app/sites-enabled:/etc/apache2/sites-enabled
+            - ./logs:/var/log/apache2
+        ports: 
+            - 8081:80
+    db: 
+      image: mariadb:latest
+      env_file: .env
+      container_name: mariadb
+      volumes: 
+        - ./database:/var/lib/mysql

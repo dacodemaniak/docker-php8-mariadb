@@ -1,0 +1,19 @@
+{
+    "name": "aelion/simple_app",
+    "description": "Simple Request / Response handling with PHP",
+    "type": "projet",
+    "autoload": {
+        "psr-4": {
+            "Aelion\\": "kernel",
+            "App\\": "src"
+        }
+    },
+    "authors": [
+        {
+            "name": "Jean-Luc Aubert",
+            "email": "jean-luc.aubert@aelion.fr"
+        }
+    ],
+    "minimum-stability": "beta",
+    "require": {}
+}
