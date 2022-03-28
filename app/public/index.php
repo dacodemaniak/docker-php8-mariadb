@@ -13,5 +13,10 @@
 require_once('./../vendor/autoload.php');
 
 use \Aelion\Kernel;
+use \Aelion\Http\Foundation\Response;
 
 $kernel = Kernel::create();
+
+$response = $kernel->handleRequest();
+
+$response->send();

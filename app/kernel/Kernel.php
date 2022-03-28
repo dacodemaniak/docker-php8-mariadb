@@ -1,6 +1,9 @@
 <?php
 namespace Aelion;
 
+use \Aelion\Http\Foundation\Request;
+use \Aelion\Http\Foundation\Response;
+
 /**
  * @name Kernel
  * @author Aélion (jean-luc.aubert@aelion.fr)
@@ -15,6 +18,12 @@ final class Kernel {
      * Current instance of the Kernel singleton
      */
     private static $instance;
+
+    /**
+     * Http Request object
+     * @var {Request}
+     */
+    private $request;
 
     private function __construct() {}
 
@@ -31,6 +40,19 @@ final class Kernel {
         return self::$instance;
     }
 
-    public function handleRequest() {}
+    public function handleRequest(): Response {
+        $this->request = new Request();
+        
+        $response = new Response();
+
+        // For demo purpose
+        $response->setContent($this->request->get('name', 'Jean-Luc'));
+
+        return $response;
+    }
+
+    public function getRequest(): Request {
+        return $this->request;
+    }
 }
 
