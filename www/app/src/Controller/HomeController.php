@@ -5,8 +5,15 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Todo;
+use App\Service\TodoService;
 
 class HomeController extends AbstractController {
+
+    private $todoService;
+
+    public function __construct() {
+        $this->todoService = new TodoService();
+    }
 
     /**
      * @Route("/")
@@ -14,29 +21,7 @@ class HomeController extends AbstractController {
     public function home(): Response {
         return $this->render(
             'home/home.html.twig',
-            ['todos' => $this->createTodos()]
+            ['todos' => $this->todoService->findAll()]
         );
-    }
-
-    private function createTodos(): array {
-        $todos = [];
-
-        $todo = new Todo();
-        $todo->setId(1);
-        $todo->setTitle('Framework PHP Symfony');
-        array_push($todos, $todo);
-
-        $todo = new Todo();
-        $todo->setId(2);
-        $todo->setTitle('Controller Symfony');
-        array_push($todos, $todo);
-
-        $todo = new Todo();
-        $todo->setId(3);
-        $todo->setTitle('Template Twig');
-        array_push($todos, $todo);
-
-        return $todos;
-
     }
 }
