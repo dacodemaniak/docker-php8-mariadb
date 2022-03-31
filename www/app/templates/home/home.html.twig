@@ -1,0 +1,25 @@
+{# templates/home/home.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Todo list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Title</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for todo in todos %}
+                <tr>
+                    <td>{{ todo.id }}</td>
+                    <td>{{ todo.title }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
