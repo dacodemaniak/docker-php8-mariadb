@@ -2,34 +2,23 @@
 namespace App\Repository;
 
 use App\Entity\Todo;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 
-class TodoRepository {
-    private $todos;
+class TodoRepository extends ServiceEntityRepository {
 
-    public function __construct() {
-        $this->todos = [];
-        $this->_createTodos();
+    public function __construct(ManagerRegistry $registry) {
+        parent::__construct($registry, Todo::class);
     }
 
-    public function findAll(): array {
-        return $this->todos;
+    public function all(): array {
+        return $this->findAll();
     }
 
-    private function _createTodos(): void {
+    public function add(Todo $todo): Todo {
+        $this->_em->persist($todo);
+        $this->_em->flush();
 
-        $todo = new Todo();
-        $todo->setId(1);
-        $todo->setTitle('Framework PHP Symfony');
-        array_push($this->todos, $todo);
-
-        $todo = new Todo();
-        $todo->setId(2);
-        $todo->setTitle('Controller Symfony');
-        array_push($this->todos, $todo);
-
-        $todo = new Todo();
-        $todo->setId(3);
-        $todo->setTitle('Template Twig');
-        array_push($this->todos, $todo);
+        return $todo;
     }
 }
