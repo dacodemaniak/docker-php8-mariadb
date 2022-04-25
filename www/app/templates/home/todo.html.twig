@@ -3,7 +3,25 @@
 {% block body %}
     <h1>Créer un todo</h1>
 
-    {{ form(todoForm) }}
+    {{ form_start(todoForm) }}
+        <div class="form-group">
+            {{ form_label(todoForm.title) }} : {{ form_widget(todoForm.title, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(todoForm.description) }} : {{ form_widget(todoForm.description, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(todoForm.beginDate) }} : {{ form_widget(todoForm.beginDate) }}
+        </div>
+
+        <div class="form-group">
+            {{ form_label(todoForm.duration) }} : {{ form_widget(todoForm.duration, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        {{ form_widget(todoForm.save, {'attr': {'class': 'btn btn-primary'}}) }}
+    {{ form_end(todoForm) }}
 
     <a href="{{ path('home') }}">Retour à l'accueil</a>
 {% endblock %}

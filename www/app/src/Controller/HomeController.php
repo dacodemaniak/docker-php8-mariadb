@@ -53,10 +53,20 @@ class HomeController extends AbstractController {
 
         // Créer un formulaire à l'aide d'un FormBuilder
         $form = $this->createFormBuilder($todo)
-            ->add('title', TextType::class)
-            ->add('description', TextareaType::class)
-            ->add('beginDate', DateType::class)
-            ->add('duration', NumberType::class)
+            ->add('title', TextType::class, [
+                'label' => 'Titre',
+                'attr' => ['placeholder' => 'Titre du todo']
+            ])
+            ->add('description', TextareaType::class, [
+                'label' => 'Description',
+                'attr' => ['placeholder' => 'Description']
+            ])
+            ->add('beginDate', DateType::class, [
+                'label' => 'Date de début'
+            ])
+            ->add('duration', NumberType::class, [
+                'label' => 'Durée'
+            ])
             ->add('save', SubmitType::class, ['label' => 'Créer'])
             ->getForm();
 
@@ -74,9 +84,9 @@ class HomeController extends AbstractController {
         }
 
         // Retourner une réponse pour affichage du résultat
-        return $this->renderForm(
+        return $this->render(
             'home/todo.html.twig',
-            ['todoForm' => $form]
+            ['todoForm' => $form->createView()]
         );
     }
 }
