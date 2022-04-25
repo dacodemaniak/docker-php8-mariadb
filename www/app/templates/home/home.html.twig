@@ -11,6 +11,7 @@
                 <th>#</th>
                 <th>Title</th>
                 <th>Description</th>
+                <th>Catégorie</th>
                 <th>Date de début</th>
                 <th>Durée</th>
             </tr>
@@ -22,6 +23,13 @@
                     <td>{{ todo.id }}</td>
                     <td>{{ todo.title }}</td>
                     <td>{{ todo.description }}</td>
+                    <td>
+                        {% if todo.category is same as(null) %}
+                            Non défini
+                        {% else %}
+                            {{ todo.category.label }}
+                        {% endif %}
+                    </td>
                     <td>{{ todo.beginDate | date('d-m-Y')}}</td>
                     <td>{{ todo.duration }}</td>
                 </tr>

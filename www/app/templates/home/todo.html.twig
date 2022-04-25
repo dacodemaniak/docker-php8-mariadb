@@ -9,6 +9,10 @@
         </div>
 
         <div class="form-group">
+            {{ form_label(todoForm.category) }} : {{ form_widget(todoForm.category, {'attr': {'class': 'form-control'}}) }}
+        </div>
+
+        <div class="form-group">
             {{ form_label(todoForm.description) }} : {{ form_widget(todoForm.description, {'attr': {'class': 'form-control'}}) }}
         </div>
 

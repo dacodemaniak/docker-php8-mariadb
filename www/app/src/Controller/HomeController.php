@@ -1,12 +1,14 @@
 <?php
 namespace App\Controller;
 
+use App\Entity\Category;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Todo;
 use App\Service\TodoService;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -53,6 +55,11 @@ class HomeController extends AbstractController {
 
         // Créer un formulaire à l'aide d'un FormBuilder
         $form = $this->createFormBuilder($todo)
+            ->add('category', EntityType::class, [
+                'class' => Category::class,
+                'choice_label' => 'label',
+                'label' => 'Catégorie'
+            ])
             ->add('title', TextType::class, [
                 'label' => 'Titre',
                 'attr' => ['placeholder' => 'Titre du todo']
