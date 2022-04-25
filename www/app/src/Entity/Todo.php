@@ -43,6 +43,11 @@ class Todo {
      */
     private $duration;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="todos")
+     */
+    private $category;
+
     public function setId(int $id): void {
         $this->id = $id;
     }
@@ -83,4 +88,11 @@ class Todo {
         return $this->duration;
     }
 
+    public function setCategory(Category $category): void {
+        $this->category = $category;
+    }
+
+    public function getCategory(): ?Category {
+        return $this->category;
+    }
 }
