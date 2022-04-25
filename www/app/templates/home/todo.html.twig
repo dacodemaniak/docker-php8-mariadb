@@ -1,12 +1,9 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>Nouveau Todo ajouté</h1>
+    <h1>Créer un todo</h1>
 
-    <ul>
-        <li>Id : {{ todo.id }}</li>
-        <li>Titre : {{ todo.title }}</li>
-    </ul>
+    {{ form(todoForm) }}
 
     <a href="{{ path('home') }}">Retour à l'accueil</a>
 {% endblock %}
