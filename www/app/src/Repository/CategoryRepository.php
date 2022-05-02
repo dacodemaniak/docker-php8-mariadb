@@ -45,6 +45,15 @@ class CategoryRepository extends ServiceEntityRepository
         }
     }
 
+    public function findByLabel(string $label): ?Category {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.label = :label')
+            ->setParameter('label', $label)
+            ->getQuery()
+            ->getSingleResult();
+        // Requête SQL générée : SELECT * FROM category c WHERE c.label = ?; 
+    }
+
     // /**
     //  * @return Category[] Returns an array of Category objects
     //  */

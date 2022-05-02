@@ -6,8 +6,10 @@ use App\Entity\Category;
 use App\Service\CategoryService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 class CategoryController extends AbstractController {
 
     /**
@@ -23,25 +25,59 @@ class CategoryController extends AbstractController {
     public function index(): Response
     {
         return $this->render('category/index.html.twig', [
-            'controller_name' => 'CategoryController',
+            'controller_name' => 'Categories',
+            'list' => $this->service->findAll(),
+            'addUri' => $this->generateUrl('add_category')
+
         ]);
     }
 
     /**
      * @Route("/category/add", name="add_category")
      */
-    public function addCategory(): void {
-        $category = new Category();
-        $category->setLabel("Personnel");
-        $category->setColor("#999");
+    public function addCategory(Request $request): Response {
+        $category = new Category(); // Une instance vide de l'entité Category
 
-        $this->service->add($category);
+        // Créer le formulaire
+        $form = $this->createFormBuilder($category)
+            ->add('label', TextType::class, [
+                'label' => 'Nom',
+                'attr' => ['placeholder' => 'Catégorie']
+                ]
+            )
+            ->add('color',  TextType::class, [
+                'label' => 'Couleur',
+                'attr' => ['placeholder' => 'Couleur']
+                ]
+            )
+            ->add('save', SubmitType::class, ['label' => 'Créer'])
+            ->getForm(); // Récupération du formulaire construit
 
-        $category = new Category();
-        $category->setLabel("Professionnel");
-        $category->setColor("#888");
+        // Traiter le formulaire
+        $form->handleRequest($request);
 
-        $this->service->add($category);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $category = $form->getData();
 
+            // On fait ce qu'on a à faire avec l'objet Todo qui contient les données saisies
+            if (!$this->service->categoryExists($category->getLabel())) {
+                $this->service->add($category);
+                // Redirige vers la page d'accueil qui affiche tous les todos
+                return $this->redirectToRoute('app_category');
+            } else {
+                // La catégorie existe déjà, informer l'utilisateur...
+                $this->addFlash(
+                    'error',
+                    'La catégorie ' . $category->getLabel() . ' existe déjà dans la base de données'
+                );
+            }
+        }
+
+        return $this->render(
+            'category/add-category.html.twig',
+            [
+                'categoryForm' => $form->createView()
+            ]
+        );
     }
 }
