@@ -3,12 +3,20 @@
 {% block title %}Hello CategoryController!{% endblock %}
 
 {% block body %}
+    {# Afficher les informations du flashbag pour informer l'utilisateur #}
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-warning" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
+
     <table class="table table-striped">
         <thead>
             <tr>
                 <th>#</th>
                 <th>Nom</th>
                 <th>Couleur</th>
+                <th>&nbsp;</th>
         </thead>
         <tbody>
             {% for category in list %}
@@ -16,6 +24,21 @@
                     <td>{{ category.id}}</td>
                     <td>{{ category.label }}</td>
                     <td>{{ category.color }}</td>
+                    <td>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="categoryMenu-{{ category.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                Action
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="categoryMenu-{{ category.id }}">
+                                <li>
+                                    <a class="dropdown-item" href="{{ path('category-update', {id: category.id}) }}">Modifier</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ path('category-delete', {id: category.id}) }}">Supprimer</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>

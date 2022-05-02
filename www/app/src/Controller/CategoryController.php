@@ -4,7 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Service\CategoryService;
+use App\Service\Exception\NotFoundException;
+use Doctrine\ORM\Exception\ORMException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -28,7 +31,6 @@ class CategoryController extends AbstractController {
             'controller_name' => 'Categories',
             'list' => $this->service->findAll(),
             'addUri' => $this->generateUrl('add_category')
-
         ]);
     }
 
@@ -79,5 +81,70 @@ class CategoryController extends AbstractController {
                 'categoryForm' => $form->createView()
             ]
         );
+    }
+
+    /**
+     * @Route("/category/delete/{id}", name="category-delete")
+     */
+    public function remove(int $id): Response {
+
+        try {
+            $this->service->remove($id);
+        } catch (\Exception $e) {
+            $this->addFlash(
+                'error',
+                $e->getMessage()
+            );
+        } catch(NotFoundException $e) {
+            $this->addFlash(
+                'error',
+                $e->getMessage()
+            );
+        }
+        
+
+        return $this->render('category/index.html.twig', [
+            'controller_name' => 'Categories',
+            'list' => $this->service->findAll(),
+            'addUri' => $this->generateUrl('add_category')
+        ]);
+    }
+
+    /**
+     * @Route("/category/update/{id}", name="category-update")
+     */
+    public function update(int $id, Request $request): Response {
+        $category = $this->service->findOne($id);
+
+        $form = $this->createFormBuilder($category)
+            ->add('label', TextType::class, [
+                'label' => 'Nom',
+                'attr' => ['placeholder' => 'Catégorie']
+            ])
+            ->add('color', TextType::class, [
+                'label' => 'Couleur',
+                'attr' => ['placeholder', 'Couleur']
+            ])
+            ->add('id', HiddenType::class)
+            ->add('save', SubmitType::class, ['label' => 'Mettre à jour'])
+            ->getForm();
+        
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $category = $form->getData();
+
+            $this->service->add($category);
+
+            return $this->redirectToRoute('app_category');
+        }
+
+        return $this->render(
+            'category/update-category.html.twig',
+            [
+                'categoryForm' => $form->createView()
+            ]
+        );
+        
     }
 }

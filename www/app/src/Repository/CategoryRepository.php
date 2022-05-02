@@ -54,6 +54,10 @@ class CategoryRepository extends ServiceEntityRepository
         // Requête SQL générée : SELECT * FROM category c WHERE c.label = ?; 
     }
 
+    public function findOne(int $id): Category {
+        return $this->_em->find(Category::class, $id);
+    }
+
     // /**
     //  * @return Category[] Returns an array of Category objects
     //  */
