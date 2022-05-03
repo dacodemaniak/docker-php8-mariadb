@@ -14,6 +14,7 @@
                 <th>Catégorie</th>
                 <th>Date de début</th>
                 <th>Durée</th>
+                <th>&nbsp;</th>
             </tr>
         </thead>
 
@@ -32,6 +33,21 @@
                     </td>
                     <td>{{ todo.beginDate | date('d-m-Y')}}</td>
                     <td>{{ todo.duration }}</td>
+                    <td>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="todoMenu-{{ todo.id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                Action
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="todoMenu-{{ todo.id }}">
+                                <li>
+                                    <a class="dropdown-item" href="{{ path('todo-update', {id: todo.id}) }}">Modifier</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ path('todo-delete', {id: todo.id}) }}">Supprimer</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>

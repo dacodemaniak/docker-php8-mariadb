@@ -96,4 +96,18 @@ class HomeController extends AbstractController {
             ['todoForm' => $form->createView()]
         );
     }
+
+    /**
+     * @Route("/todo/delete/{id}", name="todo-delete")
+     */
+    public function remove(int $id): Response {
+        return $this->redirectToRoute('home');
+    }
+
+    /**
+     * @Route("/todo/update/{id}", name="todo-update")
+     */
+    public function update(int $id, Request $request): Response {
+        return $this->redirectToRoute('home');
+    }
 }
