@@ -14,6 +14,8 @@ use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Validator\Constraints\GreaterThanOrEqual;
 
 class HomeController extends AbstractController {
 
@@ -62,6 +64,7 @@ class HomeController extends AbstractController {
             ])
             ->add('title', TextType::class, [
                 'label' => 'Titre',
+                'required' => true,
                 'attr' => ['placeholder' => 'Titre du todo']
             ])
             ->add('description', TextareaType::class, [
@@ -69,7 +72,10 @@ class HomeController extends AbstractController {
                 'attr' => ['placeholder' => 'Description']
             ])
             ->add('beginDate', DateType::class, [
-                'label' => 'Date de début'
+                'label' => 'Date de début',
+                'constraints' => [
+                    new GreaterThanOrEqual("today")
+                ]
             ])
             ->add('duration', NumberType::class, [
                 'label' => 'Durée'
@@ -79,7 +85,8 @@ class HomeController extends AbstractController {
 
         // Traiter le formulaire
         $form->handleRequest($request);
-
+        $errors = $form->getErrors(true, false);
+                
         if ($form->isSubmitted() && $form->isValid()) {
             $todo = $form->getData();
 
@@ -101,6 +108,14 @@ class HomeController extends AbstractController {
      * @Route("/todo/delete/{id}", name="todo-delete")
      */
     public function remove(int $id): Response {
+        try {
+            $this->todoService->remove($id);
+        } catch (NotFoundException $e) {
+            $this->addFlash(
+                'error',
+                $e->getMessage()
+            );
+        }
         return $this->redirectToRoute('home');
     }
 
@@ -108,6 +123,58 @@ class HomeController extends AbstractController {
      * @Route("/todo/update/{id}", name="todo-update")
      */
     public function update(int $id, Request $request): Response {
+        $todo = $this->todoService->find($id);
+
+        if ($todo) {
+            $form = $this->createFormBuilder($todo)
+            ->add('category', EntityType::class, [
+                'class' => Category::class,
+                'choice_label' => 'label',
+                'label' => 'Catégorie'
+            ])
+            ->add('title', TextType::class, [
+                'label' => 'Titre',
+                'attr' => ['placeholder' => 'Titre du todo']
+            ])
+            ->add('description', TextareaType::class, [
+                'label' => 'Description',
+                'attr' => ['placeholder' => 'Description']
+            ])
+            ->add('beginDate', DateType::class, [
+                'label' => 'Date de début'
+            ])
+            ->add('duration', NumberType::class, [
+                'label' => 'Durée'
+            ])
+            ->add('id', HiddenType::class)
+            ->add('save', SubmitType::class, ['label' => 'Modifier'])
+            ->getForm();
+
+        // Traiter le formulaire
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $todo = $form->getData();
+
+            // On fait ce qu'on a à faire avec l'objet Todo qui contient les données saisies
+            $this->todoService->add($todo);
+
+            // Redirige vers la page d'accueil qui affiche tous les todos
+            return $this->redirectToRoute('home');
+        }
+
+        // Retourner une réponse pour affichage du résultat
+        return $this->render(
+            'home/update-todo.html.twig',
+            ['todoForm' => $form->createView()]
+        );
+
+        }
+        $this->addFlash(
+            'error',
+            'Le todo ' . $id . ' n\'existe plus ou a été déplacé'
+        );
+
         return $this->redirectToRoute('home');
     }
 }

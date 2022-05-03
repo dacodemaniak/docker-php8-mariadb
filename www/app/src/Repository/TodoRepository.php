@@ -21,4 +21,15 @@ class TodoRepository extends ServiceEntityRepository {
 
         return $todo;
     }
+
+        /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function remove(Todo $entity, bool $flush = true): void {
+        $this->_em->remove($entity);
+        if ($flush) {
+            $this->_em->flush();
+        }
+    }
 }
