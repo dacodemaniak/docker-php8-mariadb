@@ -26,6 +26,16 @@ class Request {
         return null;
     }
 
+    public function __toString(): string {
+        $output = "<ul>\n";
+        foreach($this->requestData as $key => $value) {
+            $output .= '<li>' . $key . ' : ' . $value . "</li>\n";
+        }
+        $output .= "</ul>\n";
+
+        return $output;
+    }
+
     private function _parseQueryString(): void {
         foreach($_GET as $key => $value) {
             $this->requestData[$key] = $value;

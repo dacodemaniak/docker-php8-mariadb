@@ -43,12 +43,23 @@ final class Kernel {
     public function handleRequest(): Response {
         $this->request = new Request();
         
-        $response = new Response();
+        //echo $this->request;
 
-        // For demo purpose
-        $response->setContent($this->request->get('name', 'Jean-Luc'));
+        //return null;
 
-        return $response;
+        $uriParts = explode('/', $_SERVER['REQUEST_URI']);
+
+        // Got the URI to locate the controller
+        $uri = array_pop($uriParts);
+        
+        if (strstr($uri, '?')) {
+            $uri = substr($uri, 0, strpos($uri, '?'));
+        }
+
+        $fullClassName = '\\App\\Controllers\\' . ucfirst($uri);
+        $controller = new $fullClassName();
+
+        return $controller->process();
     }
 
     public function getRequest(): Request {
